@@ -77,7 +77,7 @@ def all_paths_scan(path):
         if undetected_count == 0 and suspicious_count > 0:
             result = '{item} - could be malicious, further investigation needed'
 
-        if timeout_count+confirmed_timeout_count+failure_count >= harmless_count+suspicious_count+malicious_count+undetected_count:
+        if timeout_count+confirmed_timeout_count+failure_count+type_unsupported_count >= harmless_count+suspicious_count+malicious_count+undetected_count:
             result = '{item} - file not reliably scanned, further investigation needed'
         
         results_list.append(result)
