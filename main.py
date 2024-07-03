@@ -84,13 +84,13 @@ def all_paths_scan(path):
     return results_list
         
 
-
+#test
 # api_key = '6c98224bedab17e010a3a89f9bcbf0a28292b4671c81a92151195d9037f6a2be'
-
+# path = 'D:\!objectcheck'
 # paths_list = all_paths(path)
 
 # id = submit_to_virustotal(api_key, paths_list[1])
-# hash = get_hash_from_analyses(id)
+# hash = get_hash_from_analyses(api_key, id)
 
 # print(get_file_report(api_key, hash))
 
