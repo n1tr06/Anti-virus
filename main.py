@@ -21,7 +21,7 @@ def submit_to_virustotal(api_key, path):
             data = response.json()
             return data['data']['id']
         else:
-            print(f"Error submitting file: {response.text}") #aaa
+            print(f"Error submitting file: {response.text}")
             return None
         
 def get_hash_from_analyses(id):
