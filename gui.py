@@ -22,7 +22,7 @@ def scan_files():
     file_listbox.config(yscrollcommand=scrollbar.set)
     scrollbar.config(command=file_listbox.yview)
 
-    lis = main.all_paths(directory)
+    lis = main.all_paths_scan(directory)
     for i in lis:
         file_listbox.insert(tk.END, i)
         
@@ -42,6 +42,7 @@ browse_button = tk.Button(text="Browse Folder", command=browse_folder, font=font
 browse_button.pack(pady=10)
 
 file_listbox = tk.Listbox(window)
+file_listbox.config(width=50, height=10)
 scrollbar = tk.Scrollbar(window, orient=tk.VERTICAL)
 
 scan_button = tk.Button(text="Start Scan",command =scan_files  ,font = font)

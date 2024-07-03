@@ -6,7 +6,7 @@ def all_paths(path):
     path_list = []
     for root, _, files in os.walk(path):
         for filename in files:
-            path_list.append(os.path.join(root, "\\", filename))
+            path_list.append(os.path.normpath(os.path.join(root, filename)))
     return path_list
 
 def submit_to_virustotal(api_key, path):
@@ -24,7 +24,7 @@ def submit_to_virustotal(api_key, path):
             print(f"Error submitting file: {response.text}")
             return None
         
-def get_hash_from_analyses(id):
+def get_hash_from_analyses(api_key, id):
     
     url = f'https://www.virustotal.com/api/v3/analyses/{id}'
     headers = {"x-apikey": api_key}
@@ -45,11 +45,54 @@ def get_file_report(api_key, hash):
     else:
         print(f"Error getting scan results: {response.text}")
         return None
+    
 
-api_key = '6c98224bedab17e010a3a89f9bcbf0a28292b4671c81a92151195d9037f6a2be'
-path = r'D:\\!objectcheck\\app.py'
 
-id = submit_to_virustotal(api_key, path)
-hash = get_hash_from_analyses(id)
+def all_paths_scan(path):
+    
+    api_key = '6c98224bedab17e010a3a89f9bcbf0a28292b4671c81a92151195d9037f6a2be'
+    paths_list = all_paths(path)
+    results_list = []
 
-print(get_file_report(api_key, hash))
+    for item in paths_list:
+        id = submit_to_virustotal(api_key, item)
+        hash = get_hash_from_analyses(api_key, id)
+        scan_results = get_file_report(api_key, hash)
+        malicious_count = scan_results['malicious']
+        suspicious_count = scan_results['suspicious']
+        undetected_count = scan_results['undetected']
+        harmless_count = scan_results['harmless']
+        timeout_count = scan_results['timeout']
+        confirmed_timeout_count = scan_results['confirmed-timeout']
+        failure_count = scan_results['failure']
+        type_unsupported_count = scan_results['type-unsupported']
+
+        result = f'{item} - safe file'
+        if malicious_count > 0:
+            if undetected_count > malicious_count:
+                result = f'{item} - could be malicious, further investigation needed'
+            else:
+                result = '{item} - malicious file, please take action'
+        
+        if undetected_count == 0 and suspicious_count > 0:
+            result = '{item} - could be malicious, further investigation needed'
+
+        if timeout_count+confirmed_timeout_count+failure_count >= harmless_count+suspicious_count+malicious_count+undetected_count:
+            result = '{item} - file not reliably scanned, further investigation needed'
+        
+        results_list.append(result)
+    return results_list
+        
+
+
+# api_key = '6c98224bedab17e010a3a89f9bcbf0a28292b4671c81a92151195d9037f6a2be'
+
+# paths_list = all_paths(path)
+
+# id = submit_to_virustotal(api_key, paths_list[1])
+# hash = get_hash_from_analyses(id)
+
+# print(get_file_report(api_key, hash))
+
+# path = r'D:\\!objectcheck'
+# print(all_paths_scan(path))
